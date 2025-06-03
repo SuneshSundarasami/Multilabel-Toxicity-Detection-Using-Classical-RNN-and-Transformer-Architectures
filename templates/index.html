@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Toxic Comment Classifier</title>
+    <style>
+        body { font-family: Arial; max-width: 800px; margin: 50px auto; padding: 20px; }
+        textarea { width: 100%; height: 100px; margin: 10px 0; padding: 10px; }
+        select, button { padding: 10px; margin: 10px 0; }
+        button { background: #007bff; color: white; border: none; cursor: pointer; }
+        .results { background: #f8f9fa; padding: 20px; margin: 20px 0; border-radius: 5px; }
+        .toxic { color: red; } .safe { color: green; }
+    </style>
+</head>
+<body>
+    <h1>🛡️ Toxic Comment Classifier</h1>
+    
+    <textarea id="text" placeholder="Enter your comment here..."></textarea><br>
+    
+    <select id="model">
+        <option value="BERT">BERT</option>
+        <option value="RoBERTa">RoBERTa</option>
+        <option value="DistilBERT">DistilBERT</option>
+    </select>
+    
+    <button onclick="classify()">Classify</button>
+    
+    <div id="results"></div>
+
+    <script>
+        async function classify() {
+            const text = document.getElementById('text').value;
+            const model = document.getElementById('model').value;
+            
+            if (!text) { alert('Enter some text!'); return; }
+            
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text, model })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    document.getElementById('results').innerHTML = `<div class="results">Error: ${data.error}</div>`;
+                    return;
+                }
+                
+                const result = data.result;
+                const status = result.is_toxic ? 'TOXIC' : 'SAFE';
+                const statusClass = result.is_toxic ? 'toxic' : 'safe';
+                
+                let html = `<div class="results">
+                    <h3>${data.model} Result: <span class="${statusClass}">${status}</span></h3>
+                    <h4>Probabilities:</h4>`;
+                
+                for (const [label, prob] of Object.entries(result.probabilities)) {
+                    html += `<div>${label}: ${(prob * 100).toFixed(1)}%</div>`;
+                }
+                
+                html += '</div>';
+                document.getElementById('results').innerHTML = html;
+                
+            } catch (error) {
+                document.getElementById('results').innerHTML = `<div class="results">Error: ${error}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
