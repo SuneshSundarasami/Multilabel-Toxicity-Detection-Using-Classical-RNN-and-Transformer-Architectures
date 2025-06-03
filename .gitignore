@@ -1,3 +1,6 @@
 Dataset/
 results/
 models/
+
+Playground/gpt2-toxic/
+Playground/gpt2-toxic-final/
