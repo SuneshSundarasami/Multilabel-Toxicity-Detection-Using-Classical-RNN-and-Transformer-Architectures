@@ -6,5 +6,10 @@ data:
   train_tokens: "/home/sunesh/NLP/Multi_Label_Toxic_Comment_Classifier/Dataset/Ekphrasis_processed/train_tokens.pkl"
   test_tokens: "/home/sunesh/NLP/Multi_Label_Toxic_Comment_Classifier/Dataset/Ekphrasis_processed/test_tokens.pkl"
   train_tokens_sample: "/home/sunesh/NLP/Multi_Label_Toxic_Comment_Classifier/Dataset/Ekphrasis_processed/train_tokens_sample.json"
+  glove_data_dir: "/home/sunesh/NLP/Multi_Label_Toxic_Comment_Classifier/Dataset/glove"
+
 results:
   optuna_vectorizer_allmodel_results: /home/sunesh/NLP/Multi_Label_Toxic_Comment_Classifier/results/optuna_vectorizer_allmodel_results.csv
+
+rnn_models:
+  root_dir: "/home/sunesh/NLP/Multi_Label_Toxic_Comment_Classifier/models/rnn_models"
