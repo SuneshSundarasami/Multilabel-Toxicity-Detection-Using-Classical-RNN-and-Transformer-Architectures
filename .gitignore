@@ -1,6 +1,8 @@
 Dataset/
 results/
 models/
+logs/
+cache/
 
 Playground/gpt2-toxic/
 Playground/gpt2-toxic-final/

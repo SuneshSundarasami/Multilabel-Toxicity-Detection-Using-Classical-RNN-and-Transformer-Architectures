@@ -1,0 +1,294 @@
+import pandas as pd
+import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+from sklearn.base import BaseEstimator, TransformerMixin
+from gensim.models import Word2Vec, FastText
+import gensim.downloader as api
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics import f1_score
+from sklearn.linear_model import LogisticRegression
+import xgboost as xgb
+import lightgbm as lgb
+from sklearn.multioutput import MultiOutputClassifier
+from joblib import Parallel, delayed
+import psutil
+import torch
+
+# Get number of CPU cores
+N_CORES = psutil.cpu_count(logical=True)
+
+# Check GPU availability
+DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
+
+class Word2VecVectorizer(BaseEstimator, TransformerMixin):
+    def __init__(self, vector_size=300):
+        self.vector_size = vector_size
+        self.model = None
+    
+    def fit(self, X, y=None):
+        tokenized = [text.lower().split() for text in X]
+        self.model = Word2Vec(tokenized, vector_size=self.vector_size, min_count=1, workers=N_CORES)
+        return self
+    
+    def transform(self, X):
+        def vectorize_text(text):
+            tokens = text.lower().split()
+            return np.mean([self.model.wv[token] for token in tokens if token in self.model.wv] or [np.zeros(self.vector_size)], axis=0)
+        
+        vectors = Parallel(n_jobs=N_CORES, backend='threading')(
+            delayed(vectorize_text)(text) for text in X
+        )
+        return np.array(vectors)
+
+class FastTextVectorizer(BaseEstimator, TransformerMixin):
+    def __init__(self, vector_size=300):
+        self.vector_size = vector_size
+        self.model = None
+    
+    def fit(self, X, y=None):
+        tokenized = [text.lower().split() for text in X]
+        self.model = FastText(tokenized, vector_size=self.vector_size, min_count=1, workers=N_CORES)
+        return self
+    
+    def transform(self, X):
+        def vectorize_text(text):
+            tokens = text.lower().split()
+            return np.mean([self.model.wv[token] for token in tokens], axis=0) if tokens else np.zeros(self.vector_size)
+        
+        vectors = Parallel(n_jobs=N_CORES, backend='threading')(
+            delayed(vectorize_text)(text) for text in X
+        )
+        return np.array(vectors)
+
+class GloveVectorizer(BaseEstimator, TransformerMixin):
+    def __init__(self, vector_size=100):
+        self.vector_size = vector_size
+        self.word_vectors = {}
+    
+    def fit(self, X, y=None):
+        try:
+            glove_model = api.load("glove-wiki-gigaword-100")
+            self.word_vectors = {word: glove_model[word] for word in glove_model.key_to_index}
+        except:
+            self.word_vectors = {}
+        return self
+    
+    def transform(self, X):
+        def vectorize_text(text):
+            tokens = text.lower().split()
+            return np.mean([self.word_vectors[token] for token in tokens if token in self.word_vectors] or [np.zeros(self.vector_size)], axis=0)
+        
+        vectors = Parallel(n_jobs=N_CORES, backend='threading')(
+            delayed(vectorize_text)(text) for text in X
+        )
+        return np.array(vectors)
+
+class SentenceTransformerVectorizer(BaseEstimator, TransformerMixin):
+    def __init__(self, model_name='all-MiniLM-L6-v2'):
+        self.model_name = model_name
+        self.model = None
+    
+    def fit(self, X, y=None):
+        self.model = SentenceTransformer(self.model_name, device=DEVICE)
+        return self
+    
+    def transform(self, X):
+        batch_size = 64 if DEVICE == 'cuda' else 32
+        return self.model.encode(X.tolist(), batch_size=batch_size, show_progress_bar=True, device=DEVICE)
+
+def get_vectorizers():
+    """Return dictionary of all available vectorizers"""
+    return {
+        'TF-IDF': TfidfVectorizer(max_features=20000, ngram_range=(1,2)),
+        'Count': CountVectorizer(max_features=20000, ngram_range=(1,2)),
+        'Word2Vec': Word2VecVectorizer(),
+        'FastText': FastTextVectorizer(),
+        'GloVe': GloveVectorizer(),
+        'SentenceTransformer-MiniLM': SentenceTransformerVectorizer('all-MiniLM-L6-v2'),
+        'SentenceTransformer-MPNet': SentenceTransformerVectorizer('all-mpnet-base-v2')
+    }
+
+def objective_logistic_regression(trial, X_train_vec, y_train, X_val_vec, y_val, penalty='l2'):
+    C = trial.suggest_float('C', 0.01, 100, log=True)
+    max_iter = trial.suggest_int('max_iter', 100, 1000)
+    
+    model = MultiOutputClassifier(LogisticRegression(
+        C=C, 
+        penalty=penalty, 
+        max_iter=max_iter, 
+        random_state=42,
+        solver='liblinear' if penalty == 'l1' else 'lbfgs'
+    ), n_jobs=N_CORES)
+    
+    model.fit(X_train_vec, y_train)
+    y_pred = model.predict(X_val_vec)
+    
+    def compute_f1(i):
+        return f1_score(y_val.iloc[:, i], y_pred[:, i], average='macro')
+    
+    f1_scores = Parallel(n_jobs=N_CORES)(
+        delayed(compute_f1)(i) for i in range(y_val.shape[1])
+    )
+    
+    return np.mean(f1_scores)
+
+def objective_xgboost(trial, X_train_vec, y_train, X_val_vec, y_val):
+    n_estimators = trial.suggest_int('n_estimators', 50, 300)
+    max_depth = trial.suggest_int('max_depth', 3, 10)
+    learning_rate = trial.suggest_float('learning_rate', 0.01, 0.3)
+    subsample = trial.suggest_float('subsample', 0.5, 1.0)
+    colsample_bytree = trial.suggest_float('colsample_bytree', 0.5, 1.0)
+    
+    xgb_params = {
+        'n_estimators': n_estimators,
+        'max_depth': max_depth,
+        'learning_rate': learning_rate,
+        'subsample': subsample,
+        'colsample_bytree': colsample_bytree,
+        'random_state': 42,
+        'eval_metric': 'logloss'
+    }
+    
+    if DEVICE == 'cuda':
+        xgb_params.update({
+            'tree_method': 'gpu_hist',
+            'gpu_id': 0
+        })
+        multioutput_n_jobs = 1
+    else:
+        xgb_params.update({
+            'tree_method': 'hist',
+            'n_jobs': N_CORES
+        })
+        multioutput_n_jobs = N_CORES
+    
+    model = MultiOutputClassifier(
+        xgb.XGBClassifier(**xgb_params), 
+        n_jobs=multioutput_n_jobs
+    )
+    
+    model.fit(X_train_vec, y_train)
+    y_pred = model.predict(X_val_vec)
+    
+    def compute_f1(i):
+        return f1_score(y_val.iloc[:, i], y_pred[:, i], average='macro')
+    
+    f1_scores = Parallel(n_jobs=N_CORES)(
+        delayed(compute_f1)(i) for i in range(y_val.shape[1])
+    )
+    
+    return np.mean(f1_scores)
+
+def objective_lightgbm(trial, X_train_vec, y_train, X_val_vec, y_val):
+    n_estimators = trial.suggest_int('n_estimators', 50, 300)
+    max_depth = trial.suggest_int('max_depth', 3, 10)
+    learning_rate = trial.suggest_float('learning_rate', 0.01, 0.3)
+    subsample = trial.suggest_float('subsample', 0.5, 1.0)
+    colsample_bytree = trial.suggest_float('colsample_bytree', 0.5, 1.0)
+    
+    lgb_params = {
+        'n_estimators': n_estimators,
+        'max_depth': max_depth,
+        'learning_rate': learning_rate,
+        'subsample': subsample,
+        'colsample_bytree': colsample_bytree,
+        'random_state': 42,
+        'verbose': -1
+    }
+    
+    if DEVICE == 'cuda':
+        lgb_params.update({
+            'device': 'gpu',
+            'objective': 'binary'
+        })
+        multioutput_n_jobs = 1
+    else:
+        lgb_params.update({
+            'device': 'cpu',
+            'n_jobs': N_CORES
+        })
+        multioutput_n_jobs = N_CORES
+    
+    model = MultiOutputClassifier(
+        lgb.LGBMClassifier(**lgb_params),
+        n_jobs=multioutput_n_jobs
+    )
+    
+    model.fit(X_train_vec, y_train)
+    y_pred = model.predict(X_val_vec)
+    
+    def compute_f1(i):
+        return f1_score(y_val.iloc[:, i], y_pred[:, i], average='macro')
+    
+    f1_scores = Parallel(n_jobs=N_CORES)(
+        delayed(compute_f1)(i) for i in range(y_val.shape[1])
+    )
+    
+    return np.mean(f1_scores)
+
+def get_models():
+    """Return dictionary of all available model objective functions"""
+    return {
+        'LogisticRegression_L1': lambda trial, X_tr, y_tr, X_val, y_val: objective_logistic_regression(trial, X_tr, y_tr, X_val, y_val, 'l1'),
+        'LogisticRegression_L2': lambda trial, X_tr, y_tr, X_val, y_val: objective_logistic_regression(trial, X_tr, y_tr, X_val, y_val, 'l2'),
+        'XGBoost': objective_xgboost,
+        'LightGBM': objective_lightgbm
+    }
+
+def rebuild_best_model(model_name, best_params_str, X_trainval_vec, y_trainval, X_test_vec, y_test):
+    """Rebuild and evaluate the best model on test set"""
+    import ast
+    
+    try:
+        best_params = ast.literal_eval(best_params_str)
+    except:
+        print("Error parsing best parameters")
+        return 0.0
+    
+    if model_name == 'LogisticRegression_L1':
+        model = MultiOutputClassifier(LogisticRegression(
+            penalty='l1',
+            solver='liblinear',
+            random_state=42,
+            **best_params
+        ), n_jobs=N_CORES)
+    elif model_name == 'LogisticRegression_L2':
+        model = MultiOutputClassifier(LogisticRegression(
+            penalty='l2',
+            solver='lbfgs',
+            random_state=42,
+            **best_params
+        ), n_jobs=N_CORES)
+    elif model_name == 'XGBoost':
+        xgb_params = {**best_params, 'random_state': 42, 'eval_metric': 'logloss'}
+        if DEVICE == 'cuda':
+            xgb_params.update({'tree_method': 'gpu_hist', 'gpu_id': 0})
+            n_jobs = 1
+        else:
+            xgb_params.update({'tree_method': 'hist', 'n_jobs': N_CORES})
+            n_jobs = N_CORES
+        model = MultiOutputClassifier(xgb.XGBClassifier(**xgb_params), n_jobs=n_jobs)
+    elif model_name == 'LightGBM':
+        lgb_params = {**best_params, 'random_state': 42, 'verbose': -1}
+        if DEVICE == 'cuda':
+            lgb_params.update({'device': 'gpu', 'objective': 'binary'})
+            n_jobs = 1
+        else:
+            lgb_params.update({'device': 'cpu', 'n_jobs': N_CORES})
+            n_jobs = N_CORES
+        model = MultiOutputClassifier(lgb.LGBMClassifier(**lgb_params), n_jobs=n_jobs)
+    else:
+        print(f"Unknown model: {model_name}")
+        return 0.0
+    
+    model.fit(X_trainval_vec, y_trainval)
+    y_pred = model.predict(X_test_vec)
+    
+    def compute_f1(i):
+        return f1_score(y_test.iloc[:, i], y_pred[:, i], average='macro')
+    
+    f1_scores = Parallel(n_jobs=N_CORES)(
+        delayed(compute_f1)(i) for i in range(y_test.shape[1])
+    )
+    
+    return np.mean(f1_scores)

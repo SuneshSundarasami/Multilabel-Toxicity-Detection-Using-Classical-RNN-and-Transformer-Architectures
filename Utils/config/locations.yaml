@@ -1,0 +1,4 @@
+data:
+  train_preprocessed: /home/sunesh/NLP/Multi_Label_Toxic_Comment_Classifier/Dataset/train_preprocessed.csv
+results:
+  optuna_vectorizer_allmodel_results: /home/sunesh/NLP/Multi_Label_Toxic_Comment_Classifier/results/optuna_vectorizer_allmodel_results.csv
