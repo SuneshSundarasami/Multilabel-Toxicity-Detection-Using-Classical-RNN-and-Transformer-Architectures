@@ -36,25 +36,25 @@
         \subfile{subfiles/section2}
     \end{columns}
 
+    \subfile{subfiles/pipeline_overview}
+    \subfile{subfiles/section3}
+
     \begin{columns}
         \column{0.5}
-        \subfile{subfiles/section3}
+        \subfile{subfiles/section4} % Code and Usage Guidelines
 
         \column{0.5}
-        \subfile{subfiles/section4}
+        \block{References}
+        {
+            \small
+            \begingroup
+                \nocite{*}
+                \renewcommand\refname{\vskip -2cm}
+                \bibliographystyle{unsrt}
+                \bibliography{references}
+            \endgroup
+        }
     \end{columns}
-
-    \block{References}
-    {
-        \small
-        \begingroup
-            \nocite{*}
-            \renewcommand\refname{\vskip -2cm}
-            \bibliographystyle{unsrt}
-            \bibliography{references}
-
-        \endgroup
-    }
 
     \begin{columns}
         \column{0.5}
@@ -62,7 +62,6 @@
 
         \column{0.5}
         \subfile{subfiles/contact}
-
     \end{columns}
 
     \subfile{subfiles/footer}
