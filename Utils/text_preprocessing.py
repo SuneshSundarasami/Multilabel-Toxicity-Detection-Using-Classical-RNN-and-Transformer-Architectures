@@ -126,6 +126,8 @@ class TextPreprocessor:
         
         train_data = pd.read_csv(train_path)
         test_data = pd.read_csv(test_path)
+        if output_dir is None:
+            output_dir = 'Dataset'
         
         if test_labels_path and os.path.exists(test_labels_path):
             test_labels = pd.read_csv(test_labels_path)
@@ -240,3 +242,28 @@ class TextPreprocessor:
             },
             'processed_df': processed_df
         }
+
+if __name__ == "__main__":
+    # Initialize preprocessor
+    preprocessor = TextPreprocessor(download_nltk_resources=True)
+    
+    # Check if input files exist
+    train_path = 'Dataset/train.csv'
+    test_path = 'Dataset/test.csv'
+    
+    if os.path.exists(train_path) and os.path.exists(test_path):
+        print("Starting text preprocessing...")
+        result = preprocessor.preprocess_dataset(
+            train_path=train_path,
+            test_path=test_path
+        )
+        print("Preprocessing completed!")
+        print(f"Train data shape: {result['train'].shape}")
+        print(f"Test data shape: {result['test'].shape}")
+        print(f"Train data head:\n{result['train'].head()}")
+        print(f"Test data head:\n{result['test'].head()}")
+    else:
+        print(f"Input files not found!")
+        print(f"Looking for: {train_path}, {test_path}")
+        print(f"Current directory: {os.getcwd()}")
+        print(f"Files in current directory: {os.listdir('.')}")
