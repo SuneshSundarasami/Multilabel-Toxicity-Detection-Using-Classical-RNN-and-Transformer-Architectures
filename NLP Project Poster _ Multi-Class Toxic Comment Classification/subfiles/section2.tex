@@ -3,15 +3,28 @@
 
 \block{Methodology}
 {
-    \textbf{Pipeline stages:}
+    \textbf{Pipeline overview:}
     \begin{enumerate}
-        \item \textbf{Preprocessing:} Clean text and tokenize with Ekphrasis.
-        \item \textbf{Feature Representation:} Use TF-IDF, Word2Vec, GloVe, SBERT, or transformer embeddings.
-        \item \textbf{Modeling:} Train vectorizer models (Logistic Regression, LightGBM, XGBoost), RNNs (BiGRU, BiLSTM, Attention), and fine-tune transformers (BERT, RoBERTa, GPT-1, FLAN-T5 with LoRA).
-        \item \textbf{Optimization:} Apply adaptive focal loss, oversampling, and threshold tuning.
-        \item \textbf{Evaluation:} Assess with F1-score, ROC-AUC, and per-class analysis.
+        \item \textbf{Preprocessing:} Clean and tokenize text (Ekphrasis).
+        \item \textbf{Features:} TF-IDF, Word2Vec, GloVe, Sentence-Transformer MiniLM, or transformer embeddings.
+        \item \textbf{Modeling:} Train classical models (Logistic Regression, LightGBM, XGBoost), RNNs (BiGRU, BiLSTM, Attention), and fine-tune transformers (BERT, RoBERTa, GPT-1, FLAN-T5).
+        \item \textbf{Optimization:} Adaptive focal loss, oversampling, threshold tuning.
+        \item \textbf{Evaluation:} F1-score, ROC-AUC, per-class analysis.
     \end{enumerate}
 
+    \vspace{0.5em}
 
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|c|c|}
+            \hline
+            toxic & obscene & insult & severe\_toxic & identity\_hate & threat \\
+            \hline
+            15,294 & 8,449 & 7,877 & 1,595 & 1,405 & 478 \\
+            \hline
+        \end{tabular}
+
+        \vspace{0.5em}
+        Table 1: Distribution of toxic comment labels in the dataset.
+    \end{center}
 }
 

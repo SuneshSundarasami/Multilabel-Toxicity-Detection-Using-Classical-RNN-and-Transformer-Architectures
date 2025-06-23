@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.2.1)  23 JUN 2025 23:37
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.2.1)  24 JUN 2025 01:16
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -630,13 +630,13 @@ LaTeX Font Info:    Font shape `T1/aess/b/n' in size <43> not available
 (Font)              Font shape `T1/aess/bx/n' tried instead on input line 7.
 ) (./subfiles/section2.tex
 LaTeX Font Info:    Font shape `T1/aess/b/n' in size <29.86> not available
-(Font)              Font shape `T1/aess/bx/n' tried instead on input line 16.
+(Font)              Font shape `T1/aess/bx/n' tried instead on input line 29.
 ) (./subfiles/pipeline_overview.tex
-<figures/flowchart.png, id=29, 13747.36pt x 5107.08pt>
+<figures/flowchart.png, id=29, 13739.33pt x 5107.08pt>
 File: figures/flowchart.png Graphic file (type png)
 <use figures/flowchart.png>
 Package pdftex.def Info: figures/flowchart.png  used on input line 7.
-(pdftex.def)             Requested size: 2105.74324pt x 782.23792pt.
+(pdftex.def)             Requested size: 2105.74324pt x 782.70549pt.
 LaTeX Font Info:    Font shape `T1/aess/m/it' in size <20.74> not available
 (Font)              Font shape `T1/aess/m/sl' tried instead on input line 7.
 ) (./subfiles/section3.tex
@@ -653,18 +653,18 @@ Package pdftex.def Info: figures/per_class_f1_comparison.png  used on input line
 LaTeX Font Info:    Font shape `T1/aess/m/it' in size <24.88> not available
 (Font)              Font shape `T1/aess/m/sl' tried instead on input line 19.
 ) (./subfiles/section4.tex
-LaTeX Font Info:    Trying to load font information for T1+aett on input line 15.
+LaTeX Font Info:    Trying to load font information for T1+aett on input line 14.
  (/usr/share/texlive/texmf-dist/tex/latex/ae/t1aett.fd
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
 )
-Underfull \hbox (badness 10000) in paragraph at lines 15--15
+Underfull \hbox (badness 10000) in paragraph at lines 14--14
 []$\T1/aett/m/n/29.86 https : / / github . com / SuneshSundarasami / Multi _
  []
 
 <figures/github_tcc_qrcode.png, id=33, 361.35pt x 361.35pt>
 File: figures/github_tcc_qrcode.png Graphic file (type png)
 <use figures/github_tcc_qrcode.png>
-Package pdftex.def Info: figures/github_tcc_qrcode.png  used on input line 15.
+Package pdftex.def Info: figures/github_tcc_qrcode.png  used on input line 14.
 (pdftex.def)             Requested size: 180.67456pt x 180.67456pt.
 ) (./hbrs-poster.bbl
 LaTeX Font Info:    Font shape `T1/aess/b/n' in size <35.83> not available
@@ -685,12 +685,17 @@ Underfull \hbox (badness 10000) in paragraph at lines 13--19
  []
 
 ) (./subfiles/acknowledgements.tex) (./subfiles/contact.tex
-Underfull \hbox (badness 10000) in paragraph at lines 13--13
+Underfull \hbox (badness 10000) in paragraph at lines 49--49
 
  []
 
+<figures/sunesh-aaron_qrcode.png, id=34, 361.35pt x 361.35pt>
+File: figures/sunesh-aaron_qrcode.png Graphic file (type png)
+<use figures/sunesh-aaron_qrcode.png>
+Package pdftex.def Info: figures/sunesh-aaron_qrcode.png  used on input line 49.
+(pdftex.def)             Requested size: 180.67456pt x 180.67456pt.
 ) (./subfiles/footer.tex
-<figures/b-it.pdf, id=34, 1949.2825pt x 516.93124pt>
+<figures/b-it.pdf, id=35, 1949.2825pt x 516.93124pt>
 File: figures/b-it.pdf Graphic file (type pdf)
 <use figures/b-it.pdf>
 Package pdftex.def Info: figures/b-it.pdf  used on input line 10.
@@ -704,31 +709,31 @@ Package epstopdf Info: Source file: <figures/brsu.eps>
 (epstopdf)             Command: <repstopdf --outfile=figures/brsu-eps-converted-to.pdf figures/brsu.eps>
 (epstopdf)             \includegraphics on input line 10.
 Package epstopdf Info: Output file is already uptodate.
-<figures/brsu-eps-converted-to.pdf, id=35, 1975.38pt x 359.3425pt>
+<figures/brsu-eps-converted-to.pdf, id=36, 1975.38pt x 359.3425pt>
 File: figures/brsu-eps-converted-to.pdf Graphic file (type pdf)
 <use figures/brsu-eps-converted-to.pdf>
 Package pdftex.def Info: figures/brsu-eps-converted-to.pdf  used on input line 10.
 (pdftex.def)             Requested size: 625.62389pt x 113.81102pt.
 ) [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./figures/flowchart.png> <./figures/macro_f1_comparison_1.png> <./figures/per_class_f1_comparison.png> <./figures/github_tcc_qrcode.png> <./figures/b-it.pdf> <./figures/brsu-eps-converted-to.pdf>] (./hbrs-poster.aux)
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./figures/flowchart.png> <./figures/macro_f1_comparison_1.png> <./figures/per_class_f1_comparison.png> <./figures/github_tcc_qrcode.png> <./figures/sunesh-aaron_qrcode.png> <./figures/b-it.pdf> <./figures/brsu-eps-converted-to.pdf>] (./hbrs-poster.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 20954 strings out of 478287
- 451045 string characters out of 5849290
- 789789 words of memory out of 5000000
- 38688 multiletter control sequences out of 15000+600000
+ 20961 strings out of 478287
+ 451285 string characters out of 5849290
+ 790747 words of memory out of 5000000
+ 38694 multiletter control sequences out of 15000+600000
  509777 words of font info for 113 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 115i,11n,118p,1300b,1529s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 115i,11n,118p,1244b,1529s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on hbrs-poster.pdf (1 page, 2030972 bytes).
+Output written on hbrs-poster.pdf (1 page, 2237492 bytes).
 PDF statistics:
- 72 PDF objects out of 1000 (max. 8388607)
+ 74 PDF objects out of 1000 (max. 8388607)
  34 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 139 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 144 words of extra memory for PDF output out of 10000 (max. 10000000)
 

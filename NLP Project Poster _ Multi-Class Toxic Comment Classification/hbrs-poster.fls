@@ -836,6 +836,11 @@ INPUT subfiles/contact.tex
 INPUT ./subfiles/contact.tex
 INPUT ./subfiles/contact.tex
 INPUT subfiles/contact.tex
+INPUT ./figures/sunesh-aaron_qrcode.png
+INPUT ./figures/sunesh-aaron_qrcode.png
+INPUT figures/sunesh-aaron_qrcode.png
+INPUT ./figures/sunesh-aaron_qrcode.png
+INPUT ./figures/sunesh-aaron_qrcode.png
 INPUT ./subfiles/footer.tex
 INPUT ./subfiles/footer.tex
 INPUT ./subfiles/footer.tex

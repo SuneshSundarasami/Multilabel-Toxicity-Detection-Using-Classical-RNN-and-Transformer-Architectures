@@ -1,8 +1,7 @@
 %!TEX root = ../hbrs-poster.tex
 
 
-    \block{Abstract}
-    {
-        Online platforms require robust automated systems to moderate user-generated content and maintain healthy online communities. In this project, we address multi-label toxic comment classification using a comprehensive NLP pipeline. Our workflow begins with raw data preprocessing, including text cleaning, social media-specific tokenization with Ekphrasis, and annotation of hashtags and patterns. We explore three modeling strategies: traditional vectorizer-based models (TF-IDF, Word2Vec, FastText, SBERT with Logistic Regression, LightGBM, XGBoost), RNN architectures (BiGRU, BiLSTM, BiLSTM+Attention with GloVe embeddings), and state-of-the-art transformer models (BERT, RoBERTa, GPT-1, FLAN-T5) leveraging pretrained embeddings and fine-tuning with advanced techniques such as LORA and adaptive focal loss. Oversampling is applied to address class imbalance. Hyperparameter optimization is performed using Optuna. Our evaluation demonstrates that transformer-based models significantly outperform traditional approaches, highlighting the effectiveness of modern NLP architectures for nuanced toxic comment detection.
-    }
-
+\block{Abstract}
+{
+    With the explosion of user-generated content online, ensuring safe and respectful digital spaces has become more important than ever. In this project, we address the challenge of multi-label toxic comment classification using a modern NLP pipeline. Our approach begins with thorough text cleaning and tokenization using Ekphrasis, tailored for the quirks of social media language. We extract features through a range of techniques, including TF-IDF, Word2Vec, GloVe, and Sentence-Transformer MiniLM embeddings. For modeling, we explore both classical algorithms (Logistic Regression, LightGBM, XGBoost), deep learning architectures (BiGRU, BiLSTM, Attention), and fine-tuned transformer models (BERT, RoBERTa, GPT-1, FLAN-T5). To tackle class imbalance and boost performance, we incorporate adaptive focal loss, oversampling, and threshold tuning. Our results highlight that transformer-based models, especially with advanced fine-tuning, excel at detecting nuanced toxic language. This demonstrates the real-world impact of recent NLP advances for content moderation.
+}
