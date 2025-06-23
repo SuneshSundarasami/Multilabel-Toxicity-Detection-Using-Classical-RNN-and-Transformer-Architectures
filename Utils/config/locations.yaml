@@ -13,3 +13,6 @@ results:
 
 rnn_models:
   root_dir: "/home/sunesh/NLP/Multi_Label_Toxic_Comment_Classifier/models/rnn_models"
+
+transformer_models:
+  root_dir: "/home/sunesh/NLP/Multi_Label_Toxic_Comment_Classifier/models/transformer_models"

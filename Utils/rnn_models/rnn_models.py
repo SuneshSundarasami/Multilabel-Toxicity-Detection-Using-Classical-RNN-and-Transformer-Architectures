@@ -80,24 +80,6 @@ def load_glove_embeddings(glove_path, word2idx, embedding_dim):
     # Return as tensor instead of numpy array
     return torch.FloatTensor(embedding_matrix)
 
-class FocalLoss(nn.Module):
-    """Focal Loss for addressing class imbalance"""
-    def __init__(self, alpha=None, gamma=2.0):
-        super(FocalLoss, self).__init__()
-        self.alpha = alpha
-        self.gamma = gamma
-        
-    def forward(self, inputs, targets):
-        bce_loss = F.binary_cross_entropy(inputs, targets, reduction='none')
-        pt = torch.exp(-bce_loss)
-        focal_weight = (1 - pt) ** self.gamma
-        
-        if self.alpha is not None:
-            alpha_t = self.alpha * targets + (1 - self.alpha) * (1 - targets)
-            focal_weight = alpha_t * focal_weight
-            
-        focal_loss = focal_weight * bce_loss
-        return focal_loss.mean()
 
 class AdaptiveFocalLoss(nn.Module):
     def __init__(self, alpha=None, class_gammas=None):
@@ -273,16 +255,42 @@ def oversample_minority_classes(tokens, labels, multipliers=None):
     return final_tokens, final_labels
 
 def get_model_by_name(model_name, vocab_size, embedding_dim, hidden_dim, output_dim, 
-                     pretrained_embeddings=None):
-    """Factory function to create models by name"""
+                     pretrained_embeddings=None, n_layers=1, dropout=0.5):
+    """Factory function to create models by name with all relevant args"""
     if model_name.lower() == 'gru':
-        return SimpleGRU(vocab_size, embedding_dim, hidden_dim, output_dim, 
-                        pretrained_embeddings=pretrained_embeddings)
+        return SimpleGRU(
+            vocab_size, embedding_dim, hidden_dim, output_dim,
+            n_layers=n_layers, dropout=dropout, pretrained_embeddings=pretrained_embeddings
+        )
     elif model_name.lower() == 'lstm':
-        return LSTMClassifier(vocab_size, embedding_dim, hidden_dim, output_dim, 
-                             pretrained_embeddings=pretrained_embeddings)
+        return LSTMClassifier(
+            vocab_size, embedding_dim, hidden_dim, output_dim,
+            n_layers=n_layers, dropout=dropout, pretrained_embeddings=pretrained_embeddings
+        )
     elif model_name.lower() == 'bilstm_attention':
-        return BiLSTMWithAttention(vocab_size, embedding_dim, hidden_dim, output_dim, 
-                                  pretrained_embeddings=pretrained_embeddings)
+        return BiLSTMWithAttention(
+            vocab_size, embedding_dim, hidden_dim, output_dim,
+            n_layers=n_layers, dropout=dropout, pretrained_embeddings=pretrained_embeddings
+        )
     else:
         raise ValueError(f"Unknown model name: {model_name}")
+
+def load_trained_model(model_name, model_path, vocab_size, embedding_dim, hidden_dim, output_dim,
+                      pretrained_embeddings=None, n_layers=1, dropout=0.5, device='cpu'):
+    """
+    Loads a trained model with the correct architecture and weights.
+    """
+    model = get_model_by_name(
+        model_name,
+        vocab_size=vocab_size,
+        embedding_dim=embedding_dim,
+        hidden_dim=hidden_dim,
+        output_dim=output_dim,
+        pretrained_embeddings=pretrained_embeddings,
+        n_layers=n_layers,
+        dropout=dropout
+    )
+    model.load_state_dict(torch.load(model_path, map_location=device))
+    model.to(device)
+    model.eval()
+    return model

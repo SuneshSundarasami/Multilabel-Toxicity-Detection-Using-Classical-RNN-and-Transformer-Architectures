@@ -17,7 +17,7 @@ import multiprocessing
 
 from rnn_models import (
     load_config, ToxicDataset, collate_batch, load_glove_embeddings,
-    FocalLoss, AdaptiveFocalLoss, create_vocabulary, tokens_to_indices, 
+     AdaptiveFocalLoss, create_vocabulary, tokens_to_indices, 
     oversample_minority_classes, get_model_by_name
 
 )
@@ -227,11 +227,12 @@ def main():
     CONFIG = load_config()
     
     # Hyperparameters - UPDATED FOR 300D
-    EMBEDDING_DIM = 300  # Changed from 100 to 300 for GloVe twitter 300d
+    EMBEDDING_DIM = 300  
     HIDDEN_DIM = 128
     BATCH_SIZE = 32
-    LEARNING_RATE = 0.001
-    EPOCHS = 15
+    LEARNING_RATE = 0.0001
+    EPOCHS = 50
+    DROPOUT = 0.3  
     DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
     print(f"Using device: {DEVICE}")
@@ -295,7 +296,6 @@ def main():
         EMBEDDING_MATRIX = None
     
     # Get number of CPU cores
-
     NUM_WORKERS = multiprocessing.cpu_count()
     print(f"Using {NUM_WORKERS} CPU cores for data loading")
     
@@ -324,6 +324,7 @@ def main():
     class_weights[1] *= 3   # severe_toxic
     
     print(f"Class weights: {class_weights}")
+    print(f"Dropout rate: {DROPOUT}")  # Added logging for dropout
     
     # Define class-specific gamma values (from your notebook)
     class_gammas = {
@@ -353,14 +354,26 @@ def main():
         print(f"Training {model_name}")
         print(f"{'='*50}")
         
-        # Create model
-        model = get_model_by_name(
-            model_type, vocab_size, EMBEDDING_DIM, HIDDEN_DIM, 6,
-            pretrained_embeddings=EMBEDDING_MATRIX
-        ).to(DEVICE)
-        
-        # Setup training with AdaptiveFocalLoss
-        from rnn_models import AdaptiveFocalLoss
+        # Create model with custom dropout and n_layers=3
+        if model_type == 'gru':
+            from rnn_models import SimpleGRU
+            model = SimpleGRU(
+                vocab_size, EMBEDDING_DIM, HIDDEN_DIM, 6,
+                n_layers=3, dropout=DROPOUT, pretrained_embeddings=EMBEDDING_MATRIX
+            ).to(DEVICE)
+        elif model_type == 'lstm':
+            from rnn_models import LSTMClassifier
+            model = LSTMClassifier(
+                vocab_size, EMBEDDING_DIM, HIDDEN_DIM, 6,
+                n_layers=3, dropout=DROPOUT, pretrained_embeddings=EMBEDDING_MATRIX
+            ).to(DEVICE)
+        elif model_type == 'bilstm_attention':
+            from rnn_models import BiLSTMWithAttention
+            model = BiLSTMWithAttention(
+                vocab_size, EMBEDDING_DIM, HIDDEN_DIM, 6,
+                n_layers=3, dropout=DROPOUT, pretrained_embeddings=EMBEDDING_MATRIX
+            ).to(DEVICE)
+
         criterion = AdaptiveFocalLoss(alpha=alpha, class_gammas=class_gammas).to(DEVICE)
         optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
         
@@ -369,7 +382,7 @@ def main():
         
         train_losses, val_losses = train_model(
             model, train_loader, val_loader, criterion, optimizer, DEVICE,
-            epochs=EPOCHS, patience=3, save_path=SAVE_PATH
+            epochs=EPOCHS, patience=7, save_path=SAVE_PATH  # Increased epochs and patience
         )
         
         # Load best model and evaluate

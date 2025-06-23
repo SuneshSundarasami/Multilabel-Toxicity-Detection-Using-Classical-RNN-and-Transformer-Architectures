@@ -1,0 +1,28 @@
+%%%%% title %%%%%
+\title{\parbox{0.85\linewidth}{Transformers beat traditional NLP approaches in Multi-Class Toxic Comment Classification}}
+\author{\parbox{0.85\linewidth}{
+Sunesh Praveen Raja Sundarasami, Aaron Cuthinho, Prof. Dr. Jörn Hees, MSc Tim Metzler
+}}
+
+% format title
+\definetitlestyle{BrsuTitle}{linewidth = 0mm,
+                             innersep = 0pt,
+                             titletotopverticalspace = 2.5cm,
+                             titletoblockverticalspace = 0cm
+}{
+    \begin{scope}[line width=0pt]
+        \draw[color=blocktitlebgcolor, fill=titlebgcolor]
+        (\titleposleft,\titleposbottom) rectangle (\titleposright,\titlepostop);
+    \end{scope}
+}
+\usetitlestyle{BrsuTitle}
+
+\settitle
+{
+    \vbox
+    {
+        \color{titlefgcolor} {\bfseries \Huge \sc \textbf{\@title} \par}
+        \vspace*{1em}
+        {\LARGE \@author \par}
+	}
+}

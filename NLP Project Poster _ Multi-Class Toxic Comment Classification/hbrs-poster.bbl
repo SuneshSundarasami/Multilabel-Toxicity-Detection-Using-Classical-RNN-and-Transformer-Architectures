@@ -1,0 +1,20 @@
+\begin{thebibliography}{1}
+
+\bibitem{jigsaw-toxic-comment-classification-challenge}
+cjadams, Jeffrey Sorensen, Julia Elliott, Lucas Dixon, Mark McDonald, nithum,
+  and Will Cukierski.
+\newblock Toxic comment classification challenge.
+\newblock
+  \url{https://kaggle.com/competitions/jigsaw-toxic-comment-classification-challenge},
+  2017.
+\newblock Kaggle.
+
+\bibitem{kaggle_toxic}
+Jigsaw Wikipedia and Google.
+\newblock Wikipedia comments dataset.
+\newblock
+  \url{https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge/data},
+  2017.
+\newblock Kaggle.
+
+\end{thebibliography}
