@@ -9,17 +9,17 @@
         \item \textbf{Features:} TF-IDF, Word2Vec, GloVe, Sentence-Transformer MiniLM, or transformer embeddings.
         \item \textbf{Modeling:} Train classical models (Logistic Regression, LightGBM, XGBoost), RNNs (BiGRU, BiLSTM, Attention), and fine-tune transformers (BERT, RoBERTa, GPT-1, FLAN-T5).
         \item \textbf{Optimization:} Adaptive focal loss, oversampling, threshold tuning.
-        \item \textbf{Evaluation:} F1-score, ROC-AUC, per-class analysis.
+        \item \textbf{Evaluation:} F1-score, Accuracy, per-class analysis.
     \end{enumerate}
 
     \vspace{0.5em}
 
     \begin{center}
-        \begin{tabular}{|c|c|c|c|c|c|}
+        \begin{tabular}{|c|c|c|c|c|c|c|}
             \hline
-            toxic & obscene & insult & severe\_toxic & identity\_hate & threat \\
+            Not Toxic & Toxic & Obscene & Insult & Severe Toxic & Identity Hate & Threat \\
             \hline
-            15,294 & 8,449 & 7,877 & 1,595 & 1,405 & 478 \\
+            143,346 & 15,294 & 8,449 & 7,877 & 1,595 & 1,405 & 478 \\
             \hline
         \end{tabular}
 

@@ -167,23 +167,59 @@ melted = all_results[all_results['Model'].isin(sorted_results['Model'])].melt(
     var_name='Class',
     value_name='F1_Score'
 )
-melted['Class'] = melted['Class'].str.replace('f1_', '')
 
-plt.figure(figsize=(18, 8))
+# Format class labels: replace _ with space and capitalize first letter
+melted['Class'] = melted['Class'].str.replace('f1_', '')
+melted['Class'] = melted['Class'].str.replace('_', ' ').str.title()
+
+# Shorten model names for legend
+def shorten_model_name(name):
+    mapping = {
+        "SentenceTransformer-MiniLM-L6-v2 + LightGBM": "MiniLM+LGBM",
+        "BERT-base-uncased + LightGBM": "BERT+LGBM",
+        "Attention BiLSTM": "Attn BiLSTM",
+        "GPT1": "GPT-1",
+        "DistilBERT": "DistilBERT",
+        "FLANT5BASE": "FLAN-T5-BASE",
+        "RoBERTa": "RoBERTa",
+        "BERT": "BERT",
+        "TF-IDF + Logistic Regression": "TF-IDF+LogReg",
+        "TF-IDF + LightGBM": "TF-IDF+LGBM",
+        "TF-IDF + XGBoost": "TF-IDF+XGB",
+
+        # Add more mappings as needed
+    }
+    for k, v in mapping.items():
+        if k in name:
+            return v
+    return name
+
+# Set common plot parameters for consistency
+figsize = (18, 10)
+title_fontsize = 24
+label_fontsize = 20
+tick_fontsize = 20
+legend_fontsize = 18
+annot_fontsize = 18
+
+# Apply short names for legend in melted DataFrame
+melted['Model_Short'] = melted['Model'].apply(shorten_model_name)
+
+plt.figure(figsize=figsize)
 ax2 = sns.barplot(
-    x='Class', y='F1_Score', hue='Model', data=melted,
-    dodge=True, edgecolor='black'
+    x='Class', y='F1_Score', hue='Model_Short', data=melted,
+    dodge=True, edgecolor='black', ci=None
 )
-plt.title('How Well Do Top Models Detect Each Toxicity Category?', fontsize=18, weight='bold', loc='center')
-plt.xlabel('Toxicity Category', fontsize=14)
-plt.ylabel('F1 Score', fontsize=14)
-plt.xticks(fontsize=12)
-plt.yticks(fontsize=12)
-plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=11, title='Model')
+plt.title('How Well Do Top Models Detect Each Toxicity Category?', fontsize=title_fontsize, weight='bold', loc='center')
+plt.xlabel('Toxicity Category', fontsize=label_fontsize, weight='bold')
+plt.ylabel('F1 Score', fontsize=label_fontsize, weight='bold')
+plt.xticks(fontsize=tick_fontsize)
+plt.yticks(fontsize=tick_fontsize)
+plt.legend(bbox_to_anchor=(1.01, 1), loc='upper left', fontsize=legend_fontsize, title='Model', title_fontsize=legend_fontsize, frameon=True)
 plt.grid(axis='y', linestyle='--', alpha=0.5)
 plt.tight_layout()
 per_class_f1_path = os.path.join(ANALYSIS_PLOTS_DIR, "per_class_f1_comparison.png")
-plt.savefig(per_class_f1_path, bbox_inches='tight', dpi=300)  # High resolution
+plt.savefig(per_class_f1_path, bbox_inches='tight', dpi=300)
 plt.show()
 
 # 3. Table: Top model per class
@@ -198,22 +234,26 @@ print(best[['Model', 'model_type', 'macro_f1', 'micro_f1', 'accuracy']])
 print(f"\n🏆 The best overall model is **{best['Model']}** ({best['model_type']}) with a Macro F1 of {best['macro_f1']:.2f}.")
 
 # --- Fancy Macro F1 Score Comparison (Horizontal Bar Chart with In-Bar Labels, Best F1 at Top) ---
-plt.figure(figsize=(12, max(6, 0.6 * len(sorted_results))))
+
+# Shorten model names for the horizontal bar chart as well
+sorted_results['Model_Short'] = sorted_results['Model'].apply(shorten_model_name)
+
+plt.figure(figsize=figsize)
 palette = {"RNN": "#1f77b4", "Transformer": "#ff7f0e", "Vectorizer": "#2ca02c"}
-sorted_results = top10.sort_values('macro_f1', ascending=False).reset_index(drop=True)
 bar_colors = [palette[mt] for mt in sorted_results['model_type']]
 
 ax = sns.barplot(
-    y='Model', x='macro_f1', data=sorted_results,
-    palette=bar_colors, edgecolor='black'
+    y='Model_Short', x='macro_f1', data=sorted_results,
+    palette=bar_colors, edgecolor='black', ci=None
 )
 
-plt.title('Top 10 Models: Overall Macro F1 Score Leaderboard', fontsize=18, weight='bold', pad=15, loc='center')
-plt.xlabel('Macro F1 Score', fontsize=14)
-plt.ylabel('Model', fontsize=14)
+plt.title('Top 10 Models: Overall Macro F1 Score Leaderboard', fontsize=title_fontsize, weight='bold', pad=15, loc='center')
+plt.xlabel('Macro F1 Score', fontsize=label_fontsize, weight='bold')
+plt.ylabel('Model', fontsize=label_fontsize, weight='bold')
 plt.xlim(0, 1)
-plt.xticks(fontsize=12)
-plt.yticks(fontsize=12)
+plt.xticks(fontsize=tick_fontsize)
+plt.yticks(fontsize=tick_fontsize)
+plt.legend([],[], frameon=False)  # Remove legend for horizontal bar chart
 
 for i, p in enumerate(ax.patches):
     width = p.get_width()
@@ -221,13 +261,13 @@ for i, p in enumerate(ax.patches):
     model_type = sorted_results.iloc[i]['model_type']
     color = palette[model_type]
     ax.annotate(f"{width:.2f}", (width + 0.01, y),
-                ha='left', va='center', fontsize=11, color='black', weight='bold')
+                ha='left', va='center', fontsize=annot_fontsize, color='black', weight='bold')
     ax.annotate(model_type, (min(width * 0.7, 0.85), y),
-                ha='center', va='center', fontsize=10, color='white', weight='bold',
+                ha='center', va='center', fontsize=annot_fontsize, color='white', weight='bold',
                 bbox=dict(facecolor=color, edgecolor='none', boxstyle='round,pad=0.2', alpha=0.7))
 
 plt.grid(axis='x', linestyle='--', alpha=0.5)
 plt.tight_layout()
 macro_f1_path = os.path.join(ANALYSIS_PLOTS_DIR, "macro_f1_comparison_1.png")
-plt.savefig(macro_f1_path, bbox_inches='tight', dpi=300)  # High resolution
+plt.savefig(macro_f1_path, bbox_inches='tight', dpi=300)
 plt.show()

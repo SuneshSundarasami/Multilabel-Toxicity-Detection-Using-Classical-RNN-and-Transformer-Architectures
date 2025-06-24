@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e" scale="8" border="0">
     <diagram id="BqLSz4NliBRNLOw9xbUb" name="Page-1">
-        <mxGraphModel dx="1023" dy="731" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" background="none" math="0" shadow="0">
+        <mxGraphModel dx="578" dy="453" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" background="none" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -35,7 +35,7 @@
                 <mxCell id="125" value="Annotate hashtags and patterns" style="whiteSpace=wrap;html=1;rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="118" vertex="1">
                     <mxGeometry x="20" y="250" width="100" height="50" as="geometry"/>
                 </mxCell>
-                <mxCell id="145" value="Modeliing" style="swimlane;whiteSpace=wrap;html=1;fontStyle=1;fillStyle=auto;fillColor=#B1DDF0;strokeColor=#10739e;rounded=1;labelBackgroundColor=none;swimlaneFillColor=#F5F5F5;" parent="1" vertex="1">
+                <mxCell id="145" value="Modeling" style="swimlane;whiteSpace=wrap;html=1;fontStyle=1;fillStyle=auto;fillColor=#B1DDF0;strokeColor=#10739e;rounded=1;labelBackgroundColor=none;swimlaneFillColor=#F5F5F5;startSize=23;" parent="1" vertex="1">
                     <mxGeometry x="600" y="5" width="1280" height="635" as="geometry"/>
                 </mxCell>
                 <mxCell id="158" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.442;entryY=0.017;entryDx=0;entryDy=0;entryPerimeter=0;rounded=1;" parent="145" source="146" target="149" edge="1">
@@ -159,7 +159,7 @@
                 <mxCell id="228" value="Transformer Model" style="ellipse;whiteSpace=wrap;html=1;rounded=1;fillColor=#f9f7ed;strokeColor=#36393d;" parent="278" vertex="1">
                     <mxGeometry x="62.70546666666667" width="304.58333333333337" height="46.153846153846146" as="geometry"/>
                 </mxCell>
-                <mxCell id="283" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;Fine-tuning GPT-1 and flan-t5-base using LORA&lt;/span&gt;" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="278">
+                <mxCell id="283" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;Fine-tuning GPT-1 and flan-t5-base using LoRA&lt;/span&gt;" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="278">
                     <mxGeometry x="240" y="185" width="230" height="32.31" as="geometry"/>
                 </mxCell>
                 <mxCell id="206" value="Oversampling for class imabalance" style="whiteSpace=wrap;html=1;rounded=1;" parent="145" vertex="1">
