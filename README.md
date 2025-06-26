@@ -109,7 +109,7 @@ For technical details, see [`preprocessor.py`](https://github.com/SuneshSundaras
   GRU, LSTM, BiLSTM (+attention), GloVe embeddings, adaptive focal loss.
 
 - **Transformer-based & LLMs:**  
-  BERT, RoBERTa, GPT-2/3, FLAN-T5, LoRA fine-tuning.
+  BERT, RoBERTa, GPT-1/2, FLAN-T5, LoRA fine-tuning, Few-shot prompting.
 
 ---
 
@@ -134,13 +134,19 @@ For technical details, see [`preprocessor.py`](https://github.com/SuneshSundaras
   Fine-tunes and benchmarks BERT, RoBERTa, and similar transformer models on the toxic comment dataset, tracking validation metrics and class-wise performance.
 
 - **finetuning-gpt-1-full-training.ipynb**  
-  Shows end-to-end fine-tuning of a GPT-style language model for multi-label toxicity detection, including data formatting and evaluation.
+  Shows end-to-end fine-tuning of a GPT-1 language model for multi-label toxicity classification task, including data formatting and evaluation.
 
 - **finetuning-flant5-base.ipynb**  
-  Demonstrates fine-tuning of FLAN-T5 for the same task, with tips for prompt engineering and sequence-to-sequence approaches.
+  Demonstrates fine-tuning of FLAN-T5 for the multi-label toxicity classification task and evaluation of the same.
+
+- **flan-t5-base-prompting.ipynb**
+  Using specialized few-shot prompts on a FLan-T5-Base model to perform inference on the test dataset and evaluation of the same.
+
+- **flan_t5_xl_prompting.ipynb**
+  Using specialized few-shot prompts on a FLan-T5-XL model to perform inference on the test dataset and evaluation of the same.
 
 - **GPT_Transformer_Toxic_Classifier.ipynb**  
-  Specialized experiments with GPT-based architectures for toxicity classification, including model adaptation and results.
+  Specialized experiments with GPT-2 based architectures for toxicity classification, including model adaptation and results.
 
 - **Comment_generator.ipynb**  
   Utility notebook for generating synthetic, adversarial, or “hard” toxic comments to augment the training set.
@@ -224,9 +230,9 @@ Thanks to Prof. Dr. Jörn Hees and Tim Metzler, M.Sc., for their guidance and su
 ## 👥 Contributions
 
 **Sunesh Praveen Raja Sundarasami**  
-- Developed and implemented all classical, RNN-based, and transformer-based models (including BERT, GPT, and more)
+- Developed and implemented all classical, RNN-based, and transformer-based models (including BERT, GPT-2, and more)
 - Designed and executed all data preprocessing, EDA, class balancing, and ablation/evaluation studies
-- Created all experiment notebooks, scripts, and the scientific poster
+- Created all experiment notebooks, scripts, and co-created the scientific poster
 - Contributed to project structure, code integration, and reproducibility
 
 **Aaron Cuthinho**  
