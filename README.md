@@ -236,7 +236,9 @@ Thanks to Prof. Dr. Jörn Hees and Tim Metzler, M.Sc., for their guidance and su
 - Contributed to project structure, code integration, and reproducibility
 
 **Aaron Cuthinho**  
-- Focused on transformer model training with LoRA (Low-Rank Adaptation)
+- Finetuned and evaluated Transformer-based LLM models with Low-Rank Adaptation (LoRA) technique (GPT-1 and Flan-T5-Base models)
+- Tested and evaluated LLMs with specialized few-shot prompts directly on a sub-sampled test dataset to check their feasibility for toxicity classification without finetuning. (Flan-T5-Base and Flan-T5-XL models)
+- Created reusable Jupyter notebooks for the finetuning the LLM models and for evaluating LLMs with few-shot prompts for any multi-label classification task.
 - Co-created the scientific poster
 
 ---
